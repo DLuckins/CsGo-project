@@ -1,0 +1,14 @@
+#MainAn {
+    -fx-background-image:url('Scene.jpg');
+    -fx-background-repeat:no-repeat;
+}
+#button
+{
+    -fx-background-color:black;
+
+}
+#button:hover{
+    -fx-background-color:white;
+    -fx-text-fill: black;
+}
+
