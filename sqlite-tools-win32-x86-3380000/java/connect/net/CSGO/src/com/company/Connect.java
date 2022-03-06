@@ -177,7 +177,7 @@ public class Connect {
 
         private static void checkIfProfit(Connection connection) throws SQLException {
             Statement statement = connection.createStatement();
-            String getGoodAdders = "SELECT * FROM Skins WHERE Rarity!= \"Covert\" AND ValueAdded > 0";
+            String getGoodAdders = "SELECT * FROM Skins WHERE Rarity!= \"Covert\" AND ValueAdded > 0 AND ValueAdded < 30";
             ResultSet results = statement.executeQuery(getGoodAdders);
             while (results.next()) {
                 double goodPrice = getPrecisePrice(results.getString("Price"));
@@ -198,49 +198,49 @@ public class Connect {
                 }
 
                 Statement statements = connection.createStatement();
-                String getFill = "SELECT * FROM Skins WHERE Rarity ==\""+goodRarity+"\" AND Condition == \"" + tempCondition + "\" AND HowManyInNextTier <= \"" + howManyInNextTierGood + "\" AND ValueTaken <\"" + valueAdded+"\"";
+                String getFill = "SELECT * FROM Skins WHERE Rarity ==\""+goodRarity+"\" AND Condition == \"" + tempCondition + "\" AND HowManyInNextTier <= \"" + howManyInNextTierGood + "\" AND ValueTaken <\"" + valueAdded+"\" AND ValueTaken > 0";
                 ResultSet resultFill = statements.executeQuery(getFill);
 
                 while (resultFill.next()) {
 
                     int fillHowManyInTier = resultFill.getInt("HowManyInNextTier");
                     double fillPrice = getPrecisePrice(resultFill.getString("Price"));
-                    double fillNextTierPrice = getPrecisePrice(resultFill.getString("NextTierPrice"));
+                    double fillNextTierPrice = getPrecisePrice(resultFill.getString("NextTierPriceForSameTier"));
 
                     if (fillHowManyInTier != 0 && howManyInNextTierGood != 0 ) {
-                        int allOutcomes = fillHowManyInTier + howManyInNextTierGood;
+                        int allOutcomes = fillHowManyInTier*8 + howManyInNextTierGood*2;
 
                         float oneToNineOutcome = (float) (((float)(howManyInNextTierGood / allOutcomes) * goodNextPrice + ((float)(fillHowManyInTier * 9) / allOutcomes) * fillNextTierPrice));
                         float oneToNinePrice = (float) (goodPrice + fillPrice * 9);
                         float ROIforOneToNine = (oneToNineOutcome - oneToNinePrice) / oneToNinePrice;
 
                         String sqlInsertProfit = "INSERT INTO ProfitableTradeUps(NameOfValue, Collection, Wear, Price, HowManyToPutIn, NameOfFiller, CollectionOfFiller, FillerWear, FillerPrice, HowManyFillersToPut, Cost, ROI) VALUES(?,?,?,?,?,?,?,?,?,?,?, ?)";
-                        if (ROIforOneToNine > 5 && ROIforOneToNine < 100) {
-
-                            PreparedStatement insertProfit;
-                            insertProfit = connection.prepareStatement(sqlInsertProfit);
-                            insertProfit.setString(1, results.getString("name"));
-                            insertProfit.setString(2, results.getString("Collection"));
-                            insertProfit.setString(3, results.getString("Condition"));
-                            insertProfit.setFloat(4, (float) goodPrice);
-                            insertProfit.setInt(5, 1);
-                            insertProfit.setString(6, resultFill.getString("name"));
-                            insertProfit.setString(7, resultFill.getString("Collection"));
-                            insertProfit.setString(8, resultFill.getString("Condition"));
-                            insertProfit.setDouble(9, fillPrice);
-                            insertProfit.setInt(10, 9);
-                            insertProfit.setFloat(11, oneToNinePrice);
-                            insertProfit.setFloat(12, ROIforOneToNine);
-                            insertProfit.executeUpdate();
-
-                        }
+//                        if (ROIforOneToNine > 5 && ROIforOneToNine < 100) {
+//
+//                            PreparedStatement insertProfit;
+//                            insertProfit = connection.prepareStatement(sqlInsertProfit);
+//                            insertProfit.setString(1, results.getString("name"));
+//                            insertProfit.setString(2, results.getString("Collection"));
+//                            insertProfit.setString(3, results.getString("Condition"));
+//                            insertProfit.setFloat(4, (float) goodPrice);
+//                            insertProfit.setInt(5, 1);
+//                            insertProfit.setString(6, resultFill.getString("name"));
+//                            insertProfit.setString(7, resultFill.getString("Collection"));
+//                            insertProfit.setString(8, resultFill.getString("Condition"));
+//                            insertProfit.setDouble(9, fillPrice);
+//                            insertProfit.setInt(10, 9);
+//                            insertProfit.setFloat(11, oneToNinePrice);
+//                            insertProfit.setFloat(12, ROIforOneToNine);
+//                            insertProfit.executeUpdate();
+//
+//                        }
 
                         float oneToEightOutcome = (float) (((float)(howManyInNextTierGood * 2) / allOutcomes) * goodNextPrice + ((float)(fillHowManyInTier * 8) / allOutcomes) * fillNextTierPrice);
                         float oneToEightPrice = (float) (goodPrice * 2 + fillPrice * 8);
                         float ROIforOneToEight = (oneToEightOutcome - oneToEightPrice) / oneToEightPrice;
                         System.out.println(results.getFloat("Price"));
 
-                        if (ROIforOneToEight > 5 && ROIforOneToEight < 100 ) {
+                        if ((getPrecisePrice(results.getString("ValueAdded"))*2 - getPrecisePrice(resultFill.getString("ValueTaken"))*8) > 0) {
 
                             PreparedStatement insertProfit = connection.prepareStatement(sqlInsertProfit);
                             insertProfit.setString(1, results.getString("name"));
