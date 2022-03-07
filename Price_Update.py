@@ -37,7 +37,13 @@ for record in json_data['items_list']:
 	try:
 		price =record['price']['24_hours']['average']
 	except:
-		continue
+		try:
+			price =record['price']['7_days']['average']
+		except:
+			try:
+				price =record['price']['30_days']['average']
+			except:
+				continue
 	"""
 	In Api json data, the items wear is stored in the name of item, so to divide them split method has been used.
 	The first half of split becomes the official name and second becomes the wear value.
@@ -88,5 +94,7 @@ def create_entry():
 
 #starting the update DB method
 create_entry()
+
+
 
 
