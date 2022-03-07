@@ -68,29 +68,18 @@ def create_entry():
 	#iterating trough all items we previously pushed into rows array.
 	for d in rows:
 		#for every item we need to open the database.
-		cursor.execute('SELECT * FROM skins')
+		
 		#double checking that price value isn't 0
 		if(d[2]!=0):
 			#counter will be needed to know at what number we are while iterating trough data base,
 			# so we would know what is the ID of item in database whose price we will update
-			counter =0;
+			
 			#Starting the loop, iterating trough whole database until we find a match for our item.
-			for DBrows in cursor.fetchall():
-				counter = counter + 1
-				
-				#Since some items names have some random characters when using the API data, direct comparision between items name and name in database -
-				#wont work, so this function is used to allow, some not 100% matches go trough.
-				if(SequenceMatcher(a=d[0],b=DBrows[1]).ratio()>0.9 and d[1] == DBrows[2]):
-					#this is the sql lite command, stored in update_dp variable. 
-					#Variable data stores the information needed in update_dp '?' simbols.
-					update_db = 'UPDATE Skins SET Price= ? WHERE Id =?'
-					data = (d[2], counter)
-					#Executing and commiting the update to the data base
-					cursor.execute(update_db, data)
-					connection.commit()
-					#If we've found the correct entry in database and updated, there is no need to iterate trough the remaining database,
-					#we can just skip to next item.
-					break
+			update_db = 'UPDATE skins SET PRICE = ? WHERE Name = ? AND Condition=?'
+			data = (d[2], d[0], d[1])
+			cursor.execute(update_db, data)
+			connection.commit()
+			
 				
 				
 	#closing everything		
