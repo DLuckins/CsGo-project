@@ -42,9 +42,6 @@ public class Connect {
             int id = result.getInt("Id");
 
             String sqlUpdateNextPrice = "UPDATE Skins SET NextTierPrice = ? WHERE Id == "+id;
-
-            String sqlUpdateValueAdded = "UPDATE Skins SET ValueAdded = ? WHERE Id == "+id;
-            String sqlUpdateValueTaken = "UPDATE Skins SET ValueTaken = ? WHERE Id == "+id;
             //String sqlUpdatePrice = "UPDATE AllSkins SET price_buy_orders=trim(price_buy_orders, \"€\") WHERE Id =="+id;
 
             String collection = result.getString("Collection");
@@ -56,19 +53,8 @@ public class Connect {
             pstmtNextPrice.setDouble(1, nextPrice);
             pstmtNextPrice.executeUpdate();
             nextSameTierPrice(collection, rarity, connection, condition, result);
-            double valueAdded = ValueAdded(result);
-            double valueTaken = ValueTaken(result);
-
-
-            PreparedStatement pstmtValueAdded = connection.prepareStatement(sqlUpdateValueAdded);
-            PreparedStatement pstmtValueTaken = connection.prepareStatement(sqlUpdateValueTaken);
-
-
-            pstmtValueAdded.setDouble(1, valueAdded);
-            pstmtValueAdded.executeUpdate();
-
-            pstmtValueTaken.setDouble(1, valueTaken);
-            pstmtValueTaken.executeUpdate();
+            ValueTaken(result, connection);
+            
 
         }
     }
@@ -182,21 +168,37 @@ public class Connect {
         }
 
 
-        private static double ValueAdded(ResultSet result) throws SQLException {
-
+        private static void ValueAdded(ResultSet result, Connection connection) throws SQLException {
+            int id = result.getInt("Id");
+            String sqlUpdateValueAdded = "UPDATE Skins SET ValueAdded = ? WHERE Id == "+id;
             double nextPrice = getPrecisePrice(result.getString("NextTierPrice"));
 
             double price = getPrecisePrice(result.getString("Price"));
             int howManyInNextTier = result.getInt("HowManyInNextTier");
-            return ((nextPrice/10) - price)*howManyInNextTier;
+
+            double valueAdded = ((nextPrice/10) - price)*howManyInNextTier;
+
+            PreparedStatement pstmtValueAdded = connection.prepareStatement(sqlUpdateValueAdded);
+            pstmtValueAdded.setDouble(1, valueAdded);
+            pstmtValueAdded.executeUpdate();
+
         }
 
 
-        private static double ValueTaken (ResultSet result) throws SQLException {
+        private static void ValueTaken (ResultSet result, Connection connection) throws SQLException {
+            int id = result.getInt("Id");
+            String sqlUpdateValueTaken = "UPDATE Skins SET ValueTaken = ? WHERE Id == "+id;
+
             double nextPrice = getPrecisePrice(result.getString("NextTierPriceForSameTier"));
             double price = getPrecisePrice(result.getString("Price"));
             int howManyInNextTier = result.getInt("HowManyInNextTier");
-            return (price - ((nextPrice)/10))*howManyInNextTier;
+
+            double valueTaken = (price - ((nextPrice)/10))*howManyInNextTier;
+
+            PreparedStatement pstmtValueTaken = connection.prepareStatement(sqlUpdateValueTaken);
+            pstmtValueTaken.setDouble(1, valueTaken);
+            pstmtValueTaken.executeUpdate();
+
         }
 
 
