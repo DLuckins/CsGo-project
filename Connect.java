@@ -98,12 +98,10 @@ public class Connect {
                         String sqlIsObtainable = "SELECT * FROM Skins WHERE Collection==\"" + collection + "\" AND Condition==\"" + conditions.get(conditions.indexOf(tier) - 1) + "\" AND Rarity==\"" + rarities.get(raritiesNum) + "\" AND Name == \"" + name + "\"";
                         ResultSet resultIsObtainable = statementIfNotObtainable.executeQuery(sqlIsObtainable);
 
-                        int isObtainableNext = 0;
-                        if(!resultIsObtainable.isClosed()) {
-                            isObtainableNext = resultIsObtainable.getInt("IsObtainable");
-                        }
-                        if (resultIsObtainable.isClosed() || isObtainableNext == 0) {
-                         priceForSameTier += 0;
+                        if (resultIsObtainable.isClosed()) {
+                            priceForSameTier += 0;
+                        } else if (resultIsObtainable.getInt("IsObtainable") == 0){
+                            priceForSameTier += 0;
                         } else {
                             priceForSameTier = getPrecisePrice(resultIsObtainable.getString("Price"));
                         }
@@ -284,7 +282,7 @@ public class Connect {
         }
 
 
-        //When getting values from DB as floats, they are not correct, thats why we need to get them as string and convert them to be precise.
+        //When getting values from DB as floats, they are not correct, that's why we need to get them as string and convert them to be precise.
         public static double getPrecisePrice (String price){
             if (price==null){
                 price="0.00";
