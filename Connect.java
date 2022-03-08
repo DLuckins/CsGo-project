@@ -21,11 +21,11 @@ public class Connect {
                 Statement statement = connection.createStatement();
                 String sql = "SELECT * FROM Skins";
                 ResultSet result = statement.executeQuery(sql);
-
+                //Runs for each item in DB
                 while (result.next()) {
                     updateNextTierPrice(connection, result);
                 }
-
+                //Responsible for storing profitable tradeups
                checkIfProfit(connection);
 
             } catch (SQLException e) {
@@ -39,7 +39,7 @@ public class Connect {
     public static void updateNextTierPrice(Connection connection, ResultSet result) throws SQLException {
 
         while (result.next()) {
-            //String sqlUpdatePrice = "UPDATE AllSkins SET price_buy_orders=trim(price_buy_orders, \"€\") WHERE Id =="+id;
+            //All the updating is done within each function
 
             String collection = result.getString("Collection");
             String rarity = result.getString("Rarity");
