@@ -250,11 +250,12 @@ public class Connect {
                         //If Positive outcome would be less than 0, it should automatically lose money.
                         if ((positiveOutcome > 0) && ROIforOneToEight > 0.05) {
 
-                            Statement statemetMaxFiller = connection.createStatement();
-                            Statement statemetMaxGood = connection.createStatement();
-
-                            String getFillMax = "SELECT * FROM Skins WHERE Rarity ==\""+goodRarity+"\" AND Condition == \"" + tempCondition + "\" AND HowManyInNextTier <= \"" + howManyInNextTierGood + "\" AND ValueTaken <\"" + valueAdded+"\" AND ValueTaken > -0.4 AND ValueTaken != 0";
-                            String getGoodFill = "SELECT * FROM Skins WHERE Rarity ==\""+goodRarity+"\" AND Condition == \"" + tempCondition + "\" AND HowManyInNextTier <= \"" + howManyInNextTierGood + "\" AND ValueTaken <\"" + valueAdded+"\" AND ValueTaken > -0.4 AND ValueTaken != 0";
+                            //Still yet to be implemented
+//                            Statement statemetMaxFiller = connection.createStatement();
+//                            Statement statemetMaxGood = connection.createStatement();
+//
+//                            String getFillMax = "SELECT * FROM Skins WHERE Rarity ==\""+goodRarity+"\" AND Condition == \"" + tempCondition + "\" AND HowManyInNextTier <= \"" + howManyInNextTierGood + "\" AND ValueTaken <\"" + valueAdded+"\" AND ValueTaken > -0.4 AND ValueTaken != 0";
+//                            String getGoodFill = "SELECT * FROM Skins WHERE Rarity ==\""+goodRarity+"\" AND Condition == \"" + tempCondition + "\" AND HowManyInNextTier <= \"" + howManyInNextTierGood + "\" AND ValueTaken <\"" + valueAdded+"\" AND ValueTaken > -0.4 AND ValueTaken != 0";
 
 
                             PreparedStatement insertProfit = connection.prepareStatement(sqlInsertProfit);
@@ -270,8 +271,9 @@ public class Connect {
                             insertProfit.setInt(10, 8);
                             insertProfit.setDouble(11, oneToEightPrice);
                             insertProfit.setFloat(12, ROIforOneToEight);
-                            insertProfit.setFloat(12, ROIforOneToEight);//Ads most expensive from next tier
-                            insertProfit.setFloat(12, ROIforOneToEight);//ads most expensive for filler next tier
+                            //Still yet to be implemented
+                            //insertProfit.setFloat(12, ROIforOneToEight);//Ads most expensive from next tier
+                            //insertProfit.setFloat(12, ROIforOneToEight);//ads most expensive for filler next tier
                             insertProfit.executeUpdate();
 
                         }
