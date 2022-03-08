@@ -166,7 +166,7 @@ public class Connect {
         }
 
 
-        private static void ValueAdded(ResultSet result, Connection connection) throws SQLException {
+        public static void ValueAdded(ResultSet result, Connection connection) throws SQLException {
             int id = result.getInt("Id");
             String sqlUpdateValueAdded = "UPDATE Skins SET ValueAdded = ? WHERE Id == "+id;
             double nextPrice = getPrecisePrice(result.getString("NextTierPrice"));
@@ -183,7 +183,7 @@ public class Connect {
         }
 
 
-        private static void ValueTaken (ResultSet result, Connection connection) throws SQLException {
+        public static void ValueTaken (ResultSet result, Connection connection) throws SQLException {
             int id = result.getInt("Id");
             String sqlUpdateValueTaken = "UPDATE Skins SET ValueTaken = ? WHERE Id == "+id;
 
@@ -200,7 +200,7 @@ public class Connect {
         }
 
 
-        private static void checkIfProfit(Connection connection) throws SQLException {
+        public static void checkIfProfit(Connection connection) throws SQLException {
             Statement statement = connection.createStatement();
 
             //For Now Value Added is topped out to lessen the false positives that are made because of false data
