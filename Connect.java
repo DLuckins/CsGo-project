@@ -54,7 +54,7 @@ public class Connect {
             pstmtNextPrice.executeUpdate();
             nextSameTierPrice(collection, rarity, connection, condition, result);
             ValueTaken(result, connection);
-            
+
 
         }
     }
@@ -62,7 +62,7 @@ public class Connect {
 
     public static void nextSameTierPrice(String collection, String rarity, Connection connection, String condition, ResultSet result) throws SQLException {
         Statement statements = connection.createStatement();
-
+        //Aint a higher tier than Covert, no need to calculate
         if (!Objects.equals(rarity, "Covert")) {
 
             int raritiesNum = rarities.indexOf(rarity) + 1;
