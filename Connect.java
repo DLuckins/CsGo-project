@@ -39,19 +39,12 @@ public class Connect {
     public static void updateNextTierPrice(Connection connection, ResultSet result) throws SQLException {
 
         while (result.next()) {
-            int id = result.getInt("Id");
-
-            String sqlUpdateNextPrice = "UPDATE Skins SET NextTierPrice = ? WHERE Id == "+id;
             //String sqlUpdatePrice = "UPDATE AllSkins SET price_buy_orders=trim(price_buy_orders, \"€\") WHERE Id =="+id;
 
             String collection = result.getString("Collection");
             String rarity = result.getString("Rarity");
             String condition = result.getString("Condition");
-
-            double nextPrice = nextTierPrice(collection, rarity, connection, condition, result);
-            PreparedStatement pstmtNextPrice = connection.prepareStatement(sqlUpdateNextPrice);
-            pstmtNextPrice.setDouble(1, nextPrice);
-            pstmtNextPrice.executeUpdate();
+            nextTierPrice(collection, rarity, connection, condition, result);
             nextSameTierPrice(collection, rarity, connection, condition, result);
             ValueTaken(result, connection);
 
@@ -116,7 +109,7 @@ public class Connect {
 
 
 
-        public static double nextTierPrice(String collection, String rarity, Connection connection, String condition, ResultSet result) throws SQLException {
+        public static void nextTierPrice(String collection, String rarity, Connection connection, String condition, ResultSet result) throws SQLException {
             Statement statements = connection.createStatement();
 
             int raritiesNum;
@@ -161,9 +154,14 @@ public class Connect {
                 /// updateNextTierSkinCount(connection, result, collection, raritiesNum);
 
                 int howManyInNextTier = result.getInt("HowManyInNextTier");
-                return allNextTierPrice / howManyInNextTier;
-            } else {
-                return 0;
+                int id = result.getInt("Id");
+
+                String sqlUpdateNextPrice = "UPDATE Skins SET NextTierPrice = ? WHERE Id == "+id;
+                double nextPrice = allNextTierPrice / howManyInNextTier;
+                PreparedStatement pstmtNextPrice = connection.prepareStatement(sqlUpdateNextPrice);
+                pstmtNextPrice.setDouble(1, nextPrice);
+                pstmtNextPrice.executeUpdate();
+
             }
         }
 
