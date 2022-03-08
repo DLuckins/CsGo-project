@@ -5,10 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.locks.Condition;
 
 public class Connect {
-    private static String jbcUrl = "jdbc:sqlite:/C:\\sqlite-tools-win32-x86-3380000\\FinalSkinsDbGood.db";
     public static List<String> rarities =new ArrayList<>(Arrays.asList("Consumer Grade", "Industrial Grade", "Mil-Spec Grade", "Restricted", "Classified", "Covert"));
     public static List<String> conditions = new ArrayList<>(Arrays.asList("Battle-Scarred", "Well-Worn", "Field-Tested", "Minimal Wear", "Factory New"));
 
@@ -18,6 +16,7 @@ public class Connect {
             try {
 
                 Connection connection;
+                String jbcUrl = "jdbc:sqlite:/C:\\sqlite-tools-win32-x86-3380000\\FinalSkinsDbGood.db";
                 connection = DriverManager.getConnection(jbcUrl);
                 Statement statement = connection.createStatement();
                 String sql = "SELECT * FROM Skins";
@@ -71,22 +70,18 @@ public class Connect {
             pstmtValueTaken.setDouble(1, valueTaken);
             pstmtValueTaken.executeUpdate();
 
-
-
         }
     }
 
 
-    public static double nextSameTierPrice(String collection, String rarity, Connection connection, String condition, ResultSet result) throws SQLException {
+    public static void nextSameTierPrice(String collection, String rarity, Connection connection, String condition, ResultSet result) throws SQLException {
         Statement statements = connection.createStatement();
 
         if (!Objects.equals(rarity, "Covert")) {
 
             int raritiesNum = rarities.indexOf(rarity) + 1;
-            String sqlForSameTier = "SELECT * FROM Skins WHERE Collection==\"" + collection + "\" AND Condition==\""+ result.getString("Condition") +"\" AND Rarity==\"" + rarities.get(raritiesNum) + "\"";
+            String sqlForSameTier = "SELECT * FROM Skins WHERE Collection==\"" + collection + "\" AND Condition==\""+ condition+"\" AND Rarity==\"" + rarities.get(raritiesNum) + "\"";
             ResultSet resultsForSameTier = statements.executeQuery(sqlForSameTier);
-            double allNextTierPrice = 0;
-            double howManyInTier = 0;
             double allNextSameTierPrice = 0;
 
             while (resultsForSameTier.next()) {
@@ -94,14 +89,14 @@ public class Connect {
                 int isObtainable = resultsForSameTier.getInt("IsObtainable");
                 if (isObtainable == 0 ) {
 
-                    Statement statementIsObtainable = connection.createStatement();
+                    Statement statementIfNotObtainable = connection.createStatement();
                     String name = resultsForSameTier.getString("Name");
                     String tier = resultsForSameTier.getString("Condition");
 
                     //If Battle-Scarred, no tier less than it, so out of bounds.
                     if ((!Objects.equals(tier, "Battle-Scarred"))){
-                        String sqlisObtainable = "SELECT * FROM Skins WHERE Collection==\"" + collection + "\" AND Condition==\"" + conditions.get(conditions.indexOf(tier) - 1) + "\" AND Rarity==\"" + rarities.get(raritiesNum) + "\" AND Name == \"" + name + "\"";
-                        ResultSet resultIsObtainable = statementIsObtainable.executeQuery(sqlisObtainable);
+                        String sqlIsObtainable = "SELECT * FROM Skins WHERE Collection==\"" + collection + "\" AND Condition==\"" + conditions.get(conditions.indexOf(tier) - 1) + "\" AND Rarity==\"" + rarities.get(raritiesNum) + "\" AND Name == \"" + name + "\"";
+                        ResultSet resultIsObtainable = statementIfNotObtainable.executeQuery(sqlIsObtainable);
 
                         int isObtainableNext = 0;
                         if(!resultIsObtainable.isClosed()) {
@@ -123,7 +118,6 @@ public class Connect {
                 }
                 allNextSameTierPrice+=priceForSameTier;
 
-                howManyInTier+=1.00000;
             }
 
             int id = result.getInt("Id");
@@ -133,11 +127,7 @@ public class Connect {
             pstmtHowManyInNextSameTier.setDouble(1, allNextSameTierPrice/howManyInNextTier);
             pstmtHowManyInNextSameTier.executeUpdate();
 
-
-            double ret =allNextTierPrice / howManyInTier;
-            return ret;
         }
-        else return 0;
     }
 
 
@@ -145,7 +135,7 @@ public class Connect {
         public static double nextTierPrice(String collection, String rarity, Connection connection, String condition, ResultSet result) throws SQLException {
             Statement statements = connection.createStatement();
 
-            int raritiesNum = 0;
+            int raritiesNum;
             if (!Objects.equals(rarity, "Covert")) {
                 String tempCondition = getWearThatIsTwoTearsUp(condition);
 
@@ -161,10 +151,10 @@ public class Connect {
                     double price = 0;
                     if (isObtainable == 0) {
 
-                        Statement statementt = connection.createStatement();
+                        Statement statementIfNotObtainable = connection.createStatement();
                         String name = results.getString("Name");
                         String sqlisObtainable = "SELECT * FROM Skins WHERE Collection==\"" + collection + "\" AND Condition==\"" + conditions.get(conditions.indexOf(tempCondition) - 1) + "\" AND Rarity==\"" + rarities.get(raritiesNum) + "\" AND Name == \"" + name + "\"";
-                        ResultSet resultIsObtainable = statementt.executeQuery(sqlisObtainable);
+                        ResultSet resultIsObtainable = statementIfNotObtainable.executeQuery(sqlisObtainable);
 
                         if (resultIsObtainable.isClosed()) {
                             price += 0;
@@ -187,8 +177,7 @@ public class Connect {
                 /// updateNextTierSkinCount(connection, result, collection, raritiesNum);
 
                 int howManyInNextTier = result.getInt("HowManyInNextTier");
-                double ret = allNextTierPrice / howManyInNextTier;
-                return ret;
+                return allNextTierPrice / howManyInNextTier;
             } else {
                 return 0;
             }
@@ -201,8 +190,7 @@ public class Connect {
 
             double price = getPrecisePrice(result.getString("Price"));
             int howManyInNextTier = result.getInt("HowManyInNextTier");
-            double valueAdded = ((nextPrice/10) - price)*howManyInNextTier;
-            return valueAdded;
+            return ((nextPrice/10) - price)*howManyInNextTier;
         }
 
 
@@ -210,8 +198,7 @@ public class Connect {
             double nextPrice = getPrecisePrice(result.getString("NextTierPriceForSameTier"));
             double price = getPrecisePrice(result.getString("Price"));
             int howManyInNextTier = result.getInt("HowManyInNextTier");
-            double valueTaken = (price - ((nextPrice)/10))*howManyInNextTier;
-            return valueTaken;
+            return (price - ((nextPrice)/10))*howManyInNextTier;
         }
 
 
@@ -251,7 +238,7 @@ public class Connect {
                     double fillNextTierPrice = getPrecisePrice(resultFill.getString("NextTierPriceForSameTier"));
 
                     if (fillHowManyInTier != 0 && howManyInNextTierGood != 0 ) {
-                        String sqlInsertProfit = "INSERT INTO ProfitableTradeUps(NameOfValue, Collection, Wear, Price, HowManyToPutIn, NameOfFiller, CollectionOfFiller, FillerWear, FillerPrice, HowManyFillersToPut, Cost, ROI) VALUES(?,?,?,?,?,?,?,?,?,?,?, ?)";
+                        String sqlInsertProfit = "INSERT INTO ProfitableTradeUps(NameOfValue, Collection, Wear, Price, HowManyToPutIn, NameOfFiller, CollectionOfFiller, FillerWear, FillerPrice, HowManyFillersToPut, Cost, ROI, MostExpensiveForGood, MostExpensiveForFiller) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
                         int allOutcomes = fillHowManyInTier*8 + howManyInNextTierGood*2;
                         float oneToEightOutcome = (float) (((float)(howManyInNextTierGood * 2) / allOutcomes) * goodNextPrice + ((float)(fillHowManyInTier * 8) / allOutcomes) * fillNextTierPrice);
@@ -262,6 +249,13 @@ public class Connect {
                         //This check could possibly be taken out and only The ROI should be left. Will leave it for now just in case.
                         //If Positive outcome would be less than 0, it should automatically lose money.
                         if ((positiveOutcome > 0) && ROIforOneToEight > 0.05) {
+
+                            Statement statemetMaxFiller = connection.createStatement();
+                            Statement statemetMaxGood = connection.createStatement();
+
+                            String getFillMax = "SELECT * FROM Skins WHERE Rarity ==\""+goodRarity+"\" AND Condition == \"" + tempCondition + "\" AND HowManyInNextTier <= \"" + howManyInNextTierGood + "\" AND ValueTaken <\"" + valueAdded+"\" AND ValueTaken > -0.4 AND ValueTaken != 0";
+                            String getGoodFill = "SELECT * FROM Skins WHERE Rarity ==\""+goodRarity+"\" AND Condition == \"" + tempCondition + "\" AND HowManyInNextTier <= \"" + howManyInNextTierGood + "\" AND ValueTaken <\"" + valueAdded+"\" AND ValueTaken > -0.4 AND ValueTaken != 0";
+
 
                             PreparedStatement insertProfit = connection.prepareStatement(sqlInsertProfit);
                             insertProfit.setString(1, results.getString("name"));
@@ -276,6 +270,8 @@ public class Connect {
                             insertProfit.setInt(10, 8);
                             insertProfit.setDouble(11, oneToEightPrice);
                             insertProfit.setFloat(12, ROIforOneToEight);
+                            insertProfit.setFloat(12, ROIforOneToEight);//Ads most expensive from next tier
+                            insertProfit.setFloat(12, ROIforOneToEight);//ads most expensive for filler next tier
                             insertProfit.executeUpdate();
 
                         }
@@ -293,8 +289,7 @@ public class Connect {
             }
             price = price.replaceAll(",", ".");
             price = price.replaceAll(" ", "");
-            double priceAsDouble = Double.parseDouble(price);
-            return priceAsDouble;
+            return Double.parseDouble(price);
         }
 
 
