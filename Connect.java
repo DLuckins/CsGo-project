@@ -365,7 +365,7 @@ public class Connect {
             Statement maxSql = connection.createStatement();
             ResultSet maxResult = maxSql.executeQuery(getMaxSql);
             //Isn't a price, but since we could be facing the same problem, we can use this
-            double maxVolume = getPrecisePrice(maxResult.getString("Volume"));
+            double maxVolume = getPrecisePrice(maxResult.getString("Volume_30Days"));
             return maxVolume;
         }
 
