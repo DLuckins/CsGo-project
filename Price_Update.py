@@ -109,7 +109,7 @@ def create_entry():
 			update_db = 'UPDATE skins SET PRICE = ?, Volume_30Days=?  WHERE Name = ? AND Condition=?'
 			
 			data = (d[2], d[4], d[0], d[1])
-			print(d)
+			#print(d)
 			
 			cursor.execute(update_db, data)
 			connection.commit()
