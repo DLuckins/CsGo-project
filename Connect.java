@@ -264,7 +264,7 @@ public class Connect {
 //
 //                            String getFillMax = "SELECT * FROM Skins WHERE Rarity ==\""+goodRarity+"\" AND Condition == \"" + tempCondition + "\" AND HowManyInNextTier <= \"" + howManyInNextTierGood + "\" AND ValueTaken <\"" + valueAdded+"\" AND ValueTaken > -0.4 AND ValueTaken != 0";
 //                            String getGoodFill = "SELECT * FROM Skins WHERE Rarity ==\""+goodRarity+"\" AND Condition == \"" + tempCondition + "\" AND HowManyInNextTier <= \"" + howManyInNextTierGood + "\" AND ValueTaken <\"" + valueAdded+"\" AND ValueTaken > -0.4 AND ValueTaken != 0";
-
+//Glock-18 | Pink DDPAT	The 2021 Mirage Collection	Field-Tested	0.11	2	P2000 | Amber Fade	The Dust 2 Collection	Factory New	0.39	8	3.33999991416931	2080.73876953125			114.0
 
                             PreparedStatement insertProfit = connection.prepareStatement(sqlInsertProfit);
                             insertProfit.setString(1, results.getString("name"));
@@ -279,7 +279,7 @@ public class Connect {
                             insertProfit.setInt(10, 8);
                             insertProfit.setDouble(11, oneToEightPrice);
                             insertProfit.setFloat(12, ROIforOneToEight);
-                            insertProfit.setDouble(13, MostExpensiveItemsVolume(resultFill.getString("Collection"), results.getString("Collection"), tempCondition,  goodRarity, connection));
+                            insertProfit.setDouble(13, MostExpensiveItemsVolume(resultFill.getString("Collection"), results.getString("Collection"), tempCondition, rarities.get(rarities.indexOf(goodRarity)+1), connection));
                             //Still yet to be implemented
                             //insertProfit.setFloat(12, ROIforOneToEight);//Ads most expensive from next tier
                             //insertProfit.setFloat(12, ROIforOneToEight);//ads most expensive for filler next tier
@@ -336,8 +336,8 @@ public class Connect {
 
 
         public static double MostExpensiveItemsVolume (String collectionFiller, String collectionGainer, String wear, String nextTier, Connection connection) throws SQLException {
-            String getFillersSql = "SELECT FROM Skins WHERE collection == \"" + collectionFiller + "\" AND Rarity == \"" + nextTier + "\" AND Condition == \"" + wear + "\"";
-            String getGainersSql = "SELECT FROM Skins WHERE collection == \"" + collectionGainer + "\" AND Rarity == \"" + nextTier + "\" AND Condition == \"" + wear + "\"";
+            String getFillersSql = "SELECT * FROM Skins WHERE collection == \"" + collectionFiller + "\" AND Rarity == \"" + nextTier + "\" AND Condition == \"" + wear + "\"";
+            String getGainersSql = "SELECT * FROM Skins WHERE collection == \"" + collectionGainer + "\" AND Rarity == \"" + nextTier + "\" AND Condition == \"" + wear + "\"";
             Statement filler = connection.createStatement();
             Statement gainer = connection.createStatement();
             ResultSet fillerResult = filler.executeQuery(getFillersSql);
@@ -345,28 +345,34 @@ public class Connect {
             double fillerMaxPrice = 0;
             String fillerName = null;
             while (fillerResult.next()){
-                double fillerPrice = getPrecisePrice(fillerResult.getString("Price"));
-                if (fillerMaxPrice < fillerPrice && fillerResult.getInt("isObtainable") == 1){
-                    fillerMaxPrice = fillerPrice;
-                    fillerName = fillerResult.getString("Name");
+                if(!fillerResult.isClosed()) {
+                    double fillerPrice = getPrecisePrice(fillerResult.getString("Price"));
+                    if (fillerMaxPrice < fillerPrice && fillerResult.getInt("isObtainable") == 1) {
+                        fillerMaxPrice = fillerPrice;
+                        fillerName = fillerResult.getString("Name");
+                    }
                 }
             }
             String gainerName = null;
             double gainerMaxPrice = 0;
             while (gainerResult.next()){
-                double gainerPrice = getPrecisePrice(gainerResult.getString("Price"));
-                if (gainerMaxPrice < gainerPrice && gainerResult.getInt("isObtainable") == 1){
-                    gainerMaxPrice = gainerPrice;
-                    gainerName = fillerResult.getString("Name");
+                if(!gainerResult.isClosed()) {
+                    double gainerPrice = getPrecisePrice(gainerResult.getString("Price"));
+                    if (gainerMaxPrice < gainerPrice && gainerResult.getInt("isObtainable") == 1) {
+                        gainerMaxPrice = gainerPrice;
+                        gainerName = gainerResult.getString("Name");
+                    }
                 }
             }
             String maxName = gainerMaxPrice >= fillerMaxPrice?  gainerName : fillerName;
-            String getMaxSql = "SELECT FROM Skins WHERE name == \"" + maxName + "\" AND Condition == \"" + wear + "\"";
+            String getMaxSql = "SELECT * FROM Skins WHERE name == \"" + maxName + "\" AND Condition == \"" + wear + "\"";
             Statement maxSql = connection.createStatement();
             ResultSet maxResult = maxSql.executeQuery(getMaxSql);
-            //Isn't a price, but since we could be facing the same problem, we can use this
-            double maxVolume = getPrecisePrice(maxResult.getString("Volume_30Days"));
-            return maxVolume;
+            if(!maxResult.isClosed()) {
+                //Isn't a price, but since we could be facing the same problem, we can use this
+                double maxVolume = getPrecisePrice(maxResult.getString("Volume_30Days"));
+                return maxVolume;
+            } else return 0;
         }
 
 
