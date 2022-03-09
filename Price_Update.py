@@ -19,6 +19,8 @@ rows = []
 for record in json_data['items_list']:
 	#getting the name of current item.
 	name = record['name']
+	item_icon = record['icon_url']
+
 	#variable valid is set to 0 as default
 	valid = 0
 	#if there is a gun name inside of name string, then we can set the valid to 1.
@@ -31,11 +33,28 @@ for record in json_data['items_list']:
 	if (valid == 0):
 		
 		continue
+	sep = '('
+	split_name = name.split('(')
+	name = split_name[0]
+	name = name[:-1]
+	wear = split_name[1]
+	wear = wear[:-1]
 
 	#getting the price value from json data, we have to have exception, in case in json_data there is no price history in last 24 hours
 	#and if there is no price history, then we can't update the prices, so we just continue to next item
 	try:
-		price =record['price']['24_hours']['average']
+		int(record['price']['24_hours']['sold'])>10
+		if(int(record['price']['24_hours']['sold'])>10):
+			try:
+				price =record['price']['24_hours']['average']
+			except:
+				try:
+					price =record['price']['7_days']['average']
+				except:
+					try:
+						price =record['price']['30_days']['average']
+					except:
+						continue
 	except:
 		try:
 			price =record['price']['7_days']['average']
@@ -44,21 +63,20 @@ for record in json_data['items_list']:
 				price =record['price']['30_days']['average']
 			except:
 				continue
+	if("AUG | Midnight Lily" in name):
+		print (record)
+		print( )
+		print(price)
 	"""
 	In Api json data, the items wear is stored in the name of item, so to divide them split method has been used.
 	The first half of split becomes the official name and second becomes the wear value.
 	For both wear and the name variable, last characters are removed, since they are ) and blank respectively.
 	"""
-	sep = '('
-	split_name = name.split('(')
-	name = split_name[0]
-	name = name[:-1]
-	wear = split_name[1]
-	wear = wear[:-1]
+	
 	
 		
 	#name, wear and price are pushed into rows array, making it 3 dimensional
-	rows.append([name, wear, price])
+	rows.append([name, wear, price, item_icon])
 	
 
 #connecting to DB and defining a cursor
@@ -72,29 +90,38 @@ cursor = connection.cursor()
 
 def create_entry():
 	#iterating trough all items we previously pushed into rows array.
+	
 	for d in rows:
 		#for every item we need to open the database.
+		icon_update = 'UPDATE skins SET IconUrl = ? WHERE Name = ? AND Condition=?'
+		d[3]="https://steamcommunity-a.akamaihd.net/economy/image/"+d[3]
+		icon_data = (d[3], d[0], d[1])	
 		
+		cursor.execute(icon_update, icon_data)
+		connection.commit()
 		#double checking that price value isn't 0
 		if(d[2]!=0):
 			#counter will be needed to know at what number we are while iterating trough data base,
 			# so we would know what is the ID of item in database whose price we will update
 			
-			#Starting the loop, iterating trough whole database until we find a match for our item.
+			
 			update_db = 'UPDATE skins SET PRICE = ? WHERE Name = ? AND Condition=?'
+			
 			data = (d[2], d[0], d[1])
+			
+			
 			cursor.execute(update_db, data)
 			connection.commit()
 			
+			
+			
 				
-				
+
 	#closing everything		
 	cursor.close()
 	connection.close()
 
 #starting the update DB method
 create_entry()
-
-
 
 
