@@ -39,7 +39,7 @@ for record in json_data['items_list']:
 	name = name[:-1]
 	wear = split_name[1]
 	wear = wear[:-1]
-
+	volume = 1
 	#getting the price value from json data, we have to have exception, in case in json_data there is no price history in last 24 hours
 	#and if there is no price history, then we can't update the prices, so we just continue to next item
 	try:
@@ -63,10 +63,11 @@ for record in json_data['items_list']:
 				price =record['price']['30_days']['average']
 			except:
 				continue
-	if("AUG | Midnight Lily" in name):
-		print (record)
-		print( )
-		print(price)
+	try:
+		volume = record['price']['30_days']['sold']
+	except:
+		volume = 0
+	
 	"""
 	In Api json data, the items wear is stored in the name of item, so to divide them split method has been used.
 	The first half of split becomes the official name and second becomes the wear value.
@@ -76,7 +77,7 @@ for record in json_data['items_list']:
 	
 		
 	#name, wear and price are pushed into rows array, making it 3 dimensional
-	rows.append([name, wear, price, item_icon])
+	rows.append([name, wear, price, item_icon, volume])
 	
 
 #connecting to DB and defining a cursor
@@ -105,10 +106,10 @@ def create_entry():
 			# so we would know what is the ID of item in database whose price we will update
 			
 			
-			update_db = 'UPDATE skins SET PRICE = ? WHERE Name = ? AND Condition=?'
+			update_db = 'UPDATE skins SET PRICE = ?, Volume_30Days=?  WHERE Name = ? AND Condition=?'
 			
-			data = (d[2], d[0], d[1])
-			
+			data = (d[2], d[4], d[0], d[1])
+			print(d)
 			
 			cursor.execute(update_db, data)
 			connection.commit()
