@@ -25,6 +25,12 @@ public class Connect {
                 while (result.next()) {
                     updateNextTierPrice(connection, result);
                 }
+                //needs to run a second time, since first it updated the prices for tiers.
+                sql = "SELECT * FROM Skins";
+                result = statement.executeQuery(sql);
+                while (result.next()) {
+                    updateValueAddedAndTaken(connection, result);
+                }
                 //Responsible for storing profitable tradeups
                checkIfProfit(connection);
 
@@ -46,10 +52,14 @@ public class Connect {
             String condition = result.getString("Condition");
             nextTierPrice(collection, rarity, connection, condition, result);
             nextSameTierPrice(collection, rarity, connection, condition, result);
-            ValueTaken(result, connection);
 
 
         }
+    }
+
+    public static void updateValueAddedAndTaken(Connection connection, ResultSet result) throws SQLException{
+        ValueAdded(result, connection);
+        ValueTaken(result, connection);
     }
 
 
@@ -236,17 +246,17 @@ public class Connect {
                     double fillNextTierPrice = getPrecisePrice(resultFill.getString("NextTierPriceForSameTier"));
 
                     if (fillHowManyInTier != 0 && howManyInNextTierGood != 0 ) {
-                        String sqlInsertProfit = "INSERT INTO ProfitableTradeUps(NameOfValue, Collection, Wear, Price, HowManyToPutIn, NameOfFiller, CollectionOfFiller, FillerWear, FillerPrice, HowManyFillersToPut, Cost, ROI, MostExpensiveForGood, MostExpensiveForFiller) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                        String sqlInsertProfit = "INSERT INTO ProfitableTradeUps(NameOfValue, Collection, Wear, Price, HowManyToPutIn, NameOfFiller, CollectionOfFiller, FillerWear, FillerPrice, HowManyFillersToPut, Cost, ROI, VolumeForMostExpensive  ,MostExpensiveForGood, MostExpensiveForFiller) VALUES(?, ?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
                         int allOutcomes = fillHowManyInTier*8 + howManyInNextTierGood*2;
                         float oneToEightOutcome = (float) (((float)(howManyInNextTierGood * 2) / allOutcomes) * goodNextPrice + ((float)(fillHowManyInTier * 8) / allOutcomes) * fillNextTierPrice);
                         float oneToEightPrice = (float) (goodPrice * 2 + fillPrice * 8);
-                        float ROIforOneToEight = (oneToEightOutcome - oneToEightPrice) / oneToEightPrice;
+                        float ROIforOneToEight = ((oneToEightOutcome - oneToEightPrice) / oneToEightPrice)*100 +100;
                         double positiveOutcome = (getPrecisePrice(results.getString("ValueAdded"))*2 - getPrecisePrice(resultFill.getString("ValueTaken"))*8);
 
                         //This check could possibly be taken out and only The ROI should be left. Will leave it for now just in case.
                         //If Positive outcome would be less than 0, it should automatically lose money.
-                        if ((positiveOutcome > 0) && ROIforOneToEight > 0.05) {
+                        if ((positiveOutcome > 0) && ROIforOneToEight > 105) {
 
                             //Still yet to be implemented
 //                            Statement statemetMaxFiller = connection.createStatement();
@@ -269,6 +279,7 @@ public class Connect {
                             insertProfit.setInt(10, 8);
                             insertProfit.setDouble(11, oneToEightPrice);
                             insertProfit.setFloat(12, ROIforOneToEight);
+                            insertProfit.setDouble(13, MostExpensiveItemsVolume(resultFill.getString("Collection"), results.getString("Collection"), tempCondition,  goodRarity, connection));
                             //Still yet to be implemented
                             //insertProfit.setFloat(12, ROIforOneToEight);//Ads most expensive from next tier
                             //insertProfit.setFloat(12, ROIforOneToEight);//ads most expensive for filler next tier
@@ -324,7 +335,39 @@ public class Connect {
         }
 
 
-//        public static double calculateROI(int allOutcomes, int howManyToPutIn, )
+        public static double MostExpensiveItemsVolume (String collectionFiller, String collectionGainer, String wear, String nextTier, Connection connection) throws SQLException {
+            String getFillersSql = "SELECT FROM Skins WHERE collection == \"" + collectionFiller + "\" AND Rarity == \"" + nextTier + "\" AND Condition == \"" + wear + "\"";
+            String getGainersSql = "SELECT FROM Skins WHERE collection == \"" + collectionGainer + "\" AND Rarity == \"" + nextTier + "\" AND Condition == \"" + wear + "\"";
+            Statement filler = connection.createStatement();
+            Statement gainer = connection.createStatement();
+            ResultSet fillerResult = filler.executeQuery(getFillersSql);
+            ResultSet gainerResult = gainer.executeQuery(getGainersSql);
+            double fillerMaxPrice = 0;
+            String fillerName = null;
+            while (fillerResult.next()){
+                double fillerPrice = getPrecisePrice(fillerResult.getString("Price"));
+                if (fillerMaxPrice < fillerPrice && fillerResult.getInt("isObtainable") == 1){
+                    fillerMaxPrice = fillerPrice;
+                    fillerName = fillerResult.getString("Name");
+                }
+            }
+            String gainerName = null;
+            double gainerMaxPrice = 0;
+            while (gainerResult.next()){
+                double gainerPrice = getPrecisePrice(gainerResult.getString("Price"));
+                if (gainerMaxPrice < gainerPrice && gainerResult.getInt("isObtainable") == 1){
+                    gainerMaxPrice = gainerPrice;
+                    gainerName = fillerResult.getString("Name");
+                }
+            }
+            String maxName = gainerMaxPrice >= fillerMaxPrice?  gainerName : fillerName;
+            String getMaxSql = "SELECT FROM Skins WHERE name == \"" + maxName + "\" AND Condition == \"" + wear + "\"";
+            Statement maxSql = connection.createStatement();
+            ResultSet maxResult = maxSql.executeQuery(getMaxSql);
+            //Isn't a price, but since we could be facing the same problem, we can use this
+            double maxVolume = getPrecisePrice(maxResult.getString("Volume"));
+            return maxVolume;
+        }
 
 
     }
