@@ -1,22 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.net.URL?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.scenedemo.FirstController">
+<AnchorPane prefHeight="515.0" prefWidth="786.0" styleClass="scene2" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.scenedemo.FirstController">
     <stylesheets>
         <URL value="@application.css" />
     </stylesheets>
    <children>
-      <ScrollPane prefHeight="350.0" prefWidth="573.0">
-         <content>
-            <Label fx:id="label1" alignment="TOP_LEFT" prefHeight="348.0" prefWidth="572.0" />
-         </content>
-      </ScrollPane>
-      <Button fx:id="button" layoutX="96.0" layoutY="360.0" mnemonicParsing="false" onAction="#SwitchTo1" onMouseEntered="#change1" onMouseExited="#change2" text="Go back" textFill="WHITE" />
-      <Button fx:id="button" layoutX="14.0" layoutY="360.0" mnemonicParsing="false" onAction="#ReadFile" onMouseEntered="#change1" onMouseExited="#change2" text="Generate" textFill="WHITE" />
+      <Button fx:id="GoBackButton" layoutX="95.0" layoutY="474.0" mnemonicParsing="false" onAction="#SwitchTo1" prefHeight="26.0" prefWidth="65.0" styleClass="button2" text="Go back" textFill="WHITE">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Button>
+      <Button fx:id="GenerateButton" layoutX="14.0" layoutY="474.0" mnemonicParsing="false" onAction="#Generate" prefHeight="26.0" prefWidth="65.0" styleClass="button2" text="Generate" textFill="WHITE">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Button>
+      <TableView fx:id="table1" onMouseClicked="#clickItem" prefHeight="391.0" prefWidth="786.0">
+          <placeholder>
+              <Label text="Waiting for the table to be generated" />
+          </placeholder>
+        <columns>
+          <TableColumn fx:id="Name" prefWidth="220.0" text="NameOfValue" />
+            <TableColumn fx:id="Collection" prefWidth="220.0" text="Collection" />
+            <TableColumn fx:id="Condition" minWidth="0.0" prefWidth="151.19998168945312" text="Wear" />
+            <TableColumn fx:id="AveragePrice" prefWidth="60.0" text="Price" />
+            <TableColumn fx:id="HMTP" prefWidth="180.0" text="HowManyToPutIn" />
+            <TableColumn fx:id="NOF" prefWidth="220.0" text="NameOfFiller" />
+            <TableColumn fx:id="COF" prefWidth="220.0" text="CollectionOfFiller" />
+            <TableColumn fx:id="FW" prefWidth="150.0" text="FillerWear" />
+            <TableColumn fx:id="FP" prefWidth="90.0" text="FillerPrice" />
+            <TableColumn fx:id="HMFTP" prefWidth="200.0" text="HowManyFillersToPut" />
+            <TableColumn fx:id="Cost" prefWidth="220.0" text="Cost" />
+            <TableColumn fx:id="Roi" prefWidth="220.0" text="Roi" />
+        </columns>
+      </TableView>
+      <ImageView fx:id="LoadingGif2" fitHeight="40.0" fitWidth="40.0" layoutX="746.0" layoutY="474.0" pickOnBounds="true" preserveRatio="true" visible="false">
+         <image>
+            <Image url="@loading.gif" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="SkinImage1" fitHeight="75.0" fitWidth="75.0" layoutX="14.0" layoutY="391.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="SkinImage2" fitHeight="75.0" fitWidth="75.0" layoutX="95.0" layoutY="391.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="SkinImage3" fitHeight="75.0" fitWidth="75.0" layoutX="170.0" layoutY="391.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="SkinImage4" fitHeight="75.0" fitWidth="75.0" layoutX="245.0" layoutY="391.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="SkinImage5" fitHeight="75.0" fitWidth="75.0" layoutX="320.0" layoutY="391.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="SkinImage6" fitHeight="75.0" fitWidth="75.0" layoutX="393.0" layoutY="391.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="SkinImage7" fitHeight="75.0" fitWidth="75.0" layoutX="470.0" layoutY="391.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="SkinImage8" fitHeight="75.0" fitWidth="75.0" layoutX="545.0" layoutY="391.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="SkinImage9" fitHeight="75.0" fitWidth="75.0" layoutX="620.0" layoutY="391.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="SkinImage10" fitHeight="75.0" fitWidth="75.0" layoutX="695.0" layoutY="391.0" pickOnBounds="true" preserveRatio="true" />
    </children>
 </AnchorPane>

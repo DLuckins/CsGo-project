@@ -1,23 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.net.URL?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="MainAn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="386.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.scenedemo.FirstController">
+<AnchorPane fx:id="MainAn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="380.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.scenedemo.FirstController">
    <stylesheets>
       <URL value="@application.css" />
    </stylesheets>
    <children>
-      <Button fx:id="button" layoutX="379.0" layoutY="80.0" mnemonicParsing="false" onAction="#SwitchTo2" onMouseEntered="#change1" onMouseExited="#change2" prefHeight="54.0" prefWidth="197.0" text="Generate valuable trade-ups" textFill="WHITE" AnchorPane.leftAnchor="379.0" AnchorPane.rightAnchor="24.0" AnchorPane.topAnchor="80.0">
+      <Button fx:id="Scene2Button" layoutX="337.0" layoutY="160.0" mnemonicParsing="false" onAction="#SwitchTo2" prefHeight="46.0" prefWidth="249.0" styleClass="button1" text="Generate valuable trade-ups" textFill="WHITE" AnchorPane.leftAnchor="337.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="160.0">
          <font>
-            <Font name="Book Antiqua" size="14.0" />
-         </font></Button>
-      <Button fx:id="button" layoutX="403.0" layoutY="14.0" mnemonicParsing="false" onMouseEntered="#change1" onMouseExited="#change2" prefHeight="46.0" prefWidth="148.0" text="Update database" textFill="WHITE">
-         <font>
-            <Font name="Book Antiqua" size="16.0" />
+            <Font name="Agency FB" size="22.0" />
          </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Button>
+      <Button fx:id="UpdatingButton" layoutX="388.0" layoutY="96.0" mnemonicParsing="false" onAction="#Update" prefHeight="46.0" prefWidth="148.0" styleClass="button1" text="Update database" textFill="WHITE">
+         <font>
+            <Font name="Agency FB" size="22.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </Button>
+      <Label fx:id="Updating" alignment="CENTER" layoutX="358.0" layoutY="285.0" prefHeight="40.0" prefWidth="206.0" text="Update completed!" textFill="WHITE" visible="false">
+         <font>
+            <Font name="Agency FB" size="22.0" />
+         </font>
+      </Label>
+      <ImageView fx:id="LoadingGif" fitHeight="110.0" fitWidth="169.0" layoutX="407.0" layoutY="230.0" pickOnBounds="true" preserveRatio="true" visible="false">
+         <image>
+            <Image url="@loading.gif" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>
