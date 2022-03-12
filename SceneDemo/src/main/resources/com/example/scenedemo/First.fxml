@@ -7,37 +7,65 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="MainAn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="380.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.scenedemo.FirstController">
+<AnchorPane fx:id="MainAn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="380.0" prefWidth="600.0" styleClass="MainAn" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.scenedemo.FirstController">
    <stylesheets>
       <URL value="@application.css" />
    </stylesheets>
    <children>
-      <Button fx:id="Scene2Button" layoutX="337.0" layoutY="160.0" mnemonicParsing="false" onAction="#SwitchTo2" prefHeight="46.0" prefWidth="249.0" styleClass="button1" text="Generate valuable trade-ups" textFill="WHITE" AnchorPane.leftAnchor="337.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="160.0">
-         <font>
-            <Font name="Agency FB" size="22.0" />
-         </font>
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor></Button>
-      <Button fx:id="UpdatingButton" layoutX="388.0" layoutY="96.0" mnemonicParsing="false" onAction="#Update" prefHeight="46.0" prefWidth="148.0" styleClass="button1" text="Update database" textFill="WHITE">
-         <font>
-            <Font name="Agency FB" size="22.0" />
-         </font>
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor>
-      </Button>
-      <Label fx:id="Updating" alignment="CENTER" layoutX="358.0" layoutY="285.0" prefHeight="40.0" prefWidth="206.0" text="Update completed!" textFill="WHITE" visible="false">
-         <font>
-            <Font name="Agency FB" size="22.0" />
-         </font>
-      </Label>
-      <ImageView fx:id="LoadingGif" fitHeight="110.0" fitWidth="169.0" layoutX="407.0" layoutY="230.0" pickOnBounds="true" preserveRatio="true" visible="false">
-         <image>
-            <Image url="@loading.gif" />
-         </image>
-      </ImageView>
+      <Pane fx:id="MainPane" opacity="0.85" prefHeight="380.0" prefWidth="600.0" styleClass="MainPane">
+         <children>
+            <Button fx:id="Scene2Button" layoutX="116.0" layoutY="331.0" mnemonicParsing="false" onAction="#SwitchTo2" prefHeight="33.0" prefWidth="119.0" styleClass="button1" text="Generate trade-ups" textFill="WHITE">
+               <font>
+                  <Font name="Agency FB" size="14.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Button fx:id="UpdatingButton" layoutX="13.0" layoutY="331.0" mnemonicParsing="false" onAction="#Update" prefHeight="33.0" prefWidth="94.0" styleClass="button1" text="Update database" textFill="WHITE">
+               <font>
+                  <Font name="Agency FB" size="14.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Label alignment="CENTER" layoutY="114.0" prefHeight="130.0" prefWidth="200.0" styleClass="CSGOTF" text="CSGO&#10;TRADEUP &#10;FINDER" textFill="WHITE">
+               <font>
+                  <Font size="36.0" />
+               </font>
+            </Label>
+            <Button layoutX="521.0" layoutY="331.0" mnemonicParsing="false" onAction="#SwitchToRead" prefHeight="33.0" prefWidth="65.0" styleClass="button1" text="Read me" textFill="WHITE">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <font>
+                  <Font name="Agency FB" size="14.0" />
+               </font>
+            </Button>
+            <Label fx:id="Updating" alignment="CENTER" layoutX="268.0" layoutY="327.0" prefHeight="40.0" prefWidth="206.0" text="Update completed!" textFill="WHITE" visible="false">
+               <font>
+                  <Font name="Agency FB" size="14.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+      <Pane fx:id="LoadingPane" opacity="0.85" prefHeight="380.0" prefWidth="600.0" styleClass="MainPane" visible="false">
+         <children>
+            <ImageView fx:id="LoadingGif" fitHeight="110.0" fitWidth="169.0" layoutX="245.0" layoutY="135.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@loading.gif" />
+               </image>
+            </ImageView>
+            <Label layoutX="174.0" layoutY="253.0" text="Updating Database, Please Wait" textFill="WHITE">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
    </children>
 </AnchorPane>

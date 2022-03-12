@@ -23,7 +23,7 @@
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></Button>
-      <TableView fx:id="table1" onMouseClicked="#clickItem" prefHeight="391.0" prefWidth="786.0">
+      <TableView fx:id="table1" layoutX="14.0" layoutY="11.0" onMouseClicked="#clickItem" prefHeight="443.0" prefWidth="763.0">
           <placeholder>
               <Label text="Waiting for the table to be generated" />
           </placeholder>
@@ -47,15 +47,5 @@
             <Image url="@loading.gif" />
          </image>
       </ImageView>
-      <ImageView fx:id="SkinImage1" fitHeight="75.0" fitWidth="75.0" layoutX="14.0" layoutY="391.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="SkinImage2" fitHeight="75.0" fitWidth="75.0" layoutX="95.0" layoutY="391.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="SkinImage3" fitHeight="75.0" fitWidth="75.0" layoutX="170.0" layoutY="391.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="SkinImage4" fitHeight="75.0" fitWidth="75.0" layoutX="245.0" layoutY="391.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="SkinImage5" fitHeight="75.0" fitWidth="75.0" layoutX="320.0" layoutY="391.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="SkinImage6" fitHeight="75.0" fitWidth="75.0" layoutX="393.0" layoutY="391.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="SkinImage7" fitHeight="75.0" fitWidth="75.0" layoutX="470.0" layoutY="391.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="SkinImage8" fitHeight="75.0" fitWidth="75.0" layoutX="545.0" layoutY="391.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="SkinImage9" fitHeight="75.0" fitWidth="75.0" layoutX="620.0" layoutY="391.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="SkinImage10" fitHeight="75.0" fitWidth="75.0" layoutX="695.0" layoutY="391.0" pickOnBounds="true" preserveRatio="true" />
    </children>
 </AnchorPane>

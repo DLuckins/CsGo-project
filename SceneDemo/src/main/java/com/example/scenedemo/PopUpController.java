@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -58,6 +59,10 @@ public class PopUpController {
     private Pane SPOpane;
     @FXML
     private Label TotalCost;
+    @FXML
+    private Label AverageRecievedCost;
+    @FXML
+    private Label ProfitAmount;
 
     @FXML
     private Label name;
@@ -118,6 +123,11 @@ public class PopUpController {
     @FXML
     private ImageView Output9;
     @FXML
+    private ImageView Output10;
+
+    @FXML
+    private ImageView Output11;
+    @FXML
     private Label OLabel;
 
     @FXML
@@ -146,16 +156,21 @@ public class PopUpController {
 
     @FXML
     private Label OLabel9;
+    @FXML
+    private Label OLabel10;
+
+    @FXML
+    private Label OLabel11;
 
     List <ImageView> imageView ;
     String[] textUnderImage=new String[10];
     Image[] FinImage=new Image[10];
-    String[] outputName=new String[10];
+    String popUpPaneStyle;
     public Data1 selectedData;
     public void InitData(Data1 data) throws IOException {
         selectedData=data;
     }
-
+    //clicking on show items button
     public void ShowItems(ActionEvent event) throws SQLException {
         ValuesPane.setVisible(false);
         SPOpane.setVisible(false);
@@ -171,16 +186,36 @@ public class PopUpController {
                     statement.setString(2, selectedData.getCondition());
                     ResultSet resultSet = statement.executeQuery();
                     url[0] = resultSet.getString("IconUrl");
+                    String Rarity=resultSet.getString("Rarity");
+                    //getting rarity color
+                    switch(Rarity){
+                        case "Classified":
+                            popUpPaneStyle="-fx-background-color: #d32ee6;";
+                            break;
+                        case "Consumer Grade":
+                            popUpPaneStyle="-fx-background-color: #b0c3d9;";
+                            break;
+                        case "Industrial Grade":
+                            popUpPaneStyle="-fx-background-color: #5e98d9;";
+                            break;
+                        case "Mil-Spec Grade":
+                            popUpPaneStyle="-fx-background-color: #4b69ff;";
+                            break;
+                        case "Restricted":
+                            popUpPaneStyle="-fx-background-color: #8847ff;";
+                            break;
+                    }
+                    ItemsPane.setStyle(popUpPaneStyle);
                     statement.setString(1, selectedData.getNOF());
                     statement.setString(2, selectedData.getFW());
                     resultSet=statement.executeQuery();
                     url[1]=resultSet.getString("IconUrl");
                     for (int i = 0; i < Images1; i++) {
-                        textUnderImage[i] = selectedData.getName() + "\n(" + selectedData.getCondition() + ")";
+                        textUnderImage[i] = selectedData.getName() + "\n(" + selectedData.getCondition() + ")\n"+selectedData.getAveragePrice()+"€";
                         FinImage[i] = new Image(url[0]);
                     }
                     for (Images1 = Images1; Images1 < Images2; Images1++) {
-                        textUnderImage[Images1] = selectedData.getNOF() + "\n(" + selectedData.getFW() + ")";
+                        textUnderImage[Images1] = selectedData.getNOF() + "\n(" + selectedData.getFW() + ")\n"+selectedData.getFP()+"€";
                         FinImage[Images1] = new Image(url[1]);
                     }
                     Img1.setImage(FinImage[0]);
@@ -211,13 +246,19 @@ public class PopUpController {
 
 
     }
+    //clicking on show value button
     public void ShowValue(ActionEvent event){
         ItemsPane.setVisible(false);
         SPOpane.setVisible(false);
         ValuesPane.setVisible(true);
         DecimalFormat df = new DecimalFormat("###.##");
+        double averageReceived= selectedData.getCost()*(selectedData.getROI()/100);
+        double profit=averageReceived-selectedData.getCost();
     TotalCost.setText(String.valueOf(df.format(selectedData.getCost()))+"€");
+    AverageRecievedCost.setText(String.valueOf(df.format(averageReceived))+"€");
+    ProfitAmount.setText(String.valueOf(df.format(profit))+"€");
     }
+    //clicking on show outcomes button
     @FXML
     void SPO(ActionEvent event) throws SQLException{
         ValuesPane.setVisible(false);
@@ -225,14 +266,37 @@ public class PopUpController {
         SPOpane.setVisible(true);
         String pathToDB = "FinalSkinsDb.db";
         Connection connection = DriverManager.getConnection("jdbc:sqlite:" + pathToDB);
-        List<String> url = ImgSrc(selectedData);
-        Image[] outcomes=new Image[10];
-        for(int i=0;i<url.size();i++){
-            outcomes[i]=new Image(url.get(i));
+        OutputGenerator output=new OutputGenerator();
+        List<String> url = output.ImgSrc(selectedData);
+        Image[] outcomes=new Image[12];
+        if (url!=null) {
+            for (int i = 0; i < url.size(); i++) {
+                outcomes[i] = new Image(url.get(i));
 
-           // System.out.println(url.get(i));
+                // System.out.println(url.get(i));
+            }
         }
+        String Rarity=getRarity();
+        //getting higher rarity color
+        switch(Rarity){
+            case "Classified":
+                popUpPaneStyle="-fx-background-color: #d32ee6;";
+                break;
+            case "Covert":
+                popUpPaneStyle="-fx-background-color: #eb4b4b;";
+                break;
+            case "Industrial Grade":
+                popUpPaneStyle="-fx-background-color: #5e98d9;";
+                break;
+            case "Mil-Spec Grade":
+                popUpPaneStyle="-fx-background-color: #4b69ff;";
+                break;
+            case "Restricted":
+                popUpPaneStyle="-fx-background-color: #8847ff;";
+                break;}
+        SPOpane.setStyle(popUpPaneStyle);
         outputCondition=getOutputCondition();
+        //setting images into pane SpoPane
         Output.setImage(outcomes[0]);
         Output1.setImage(outcomes[1]);
         Output2.setImage(outcomes[2]);
@@ -243,14 +307,28 @@ public class PopUpController {
         Output7.setImage(outcomes[7]);
         Output8.setImage(outcomes[8]);
         Output9.setImage(outcomes[9]);
-        outputName=getOutputName();
+        Output10.setImage(outcomes[10]);
+        Output11.setImage(outcomes[11]);
+        String[] imageOutputName= output.getOutputName();
+        double[] chancesForItems=new double[12];
+        for(int i=0;i<output.getHowManyInNextTier2();i++){
+            chancesForItems[i]=output.getChanceFiller();
+        }
+        for (int i= output.getHowManyInNextTier2();i<output.getHowManyInNextTier2()+output.getHowManyInNextTier1();i++){
+            chancesForItems[i]= output.getChanceGood();
+        }
+        String[] outputPrice=output.getOutputPrice();
         String outputCondition=getOutputCondition();
-        String[] outputText=new String[10];
-        for(int i=0;i<outputName.length;i++){
-            if (outputName[i]!=null){
-                outputText[i]=outputName[i]+"\n("+outputCondition+")";
+        String[] outputText=new String[12];
+        for(int i=0; i<12;i++){
+            outputText[i]=null;
+        }
+        for(int i=0;i<imageOutputName.length;i++){
+            if (imageOutputName[i]!=null){
+                outputText[i]=imageOutputName[i]+"\n("+outputCondition+")\n"+outputPrice[i]+"€\n"+chancesForItems[i]+"%";
             }
         }
+        //setting text into pane Spopane
         OLabel.setText(outputText[0]);
         OLabel1.setText(outputText[1]);
         OLabel2.setText(outputText[2]);
@@ -261,19 +339,8 @@ public class PopUpController {
         OLabel7.setText(outputText[7]);
         OLabel8.setText(outputText[8]);
         OLabel9.setText(outputText[9]);
-        /*try {
-            int i=0;
-            while (resultSet.next()) {
-                Image outcomes=new Image(resultSet.getString("IconUrl"));
-                ImageView imageView = new ImageView(outcomes);
-                AllOutcomes[i] = imageView;
-                SPOpane.getChildren().add(AllOutcomes[i]);
-            }
-        }
-
-    catch (SQLException e){
-        System.out.println(e.getMessage());
-    }*/
+        OLabel10.setText(outputText[10]);
+        OLabel11.setText(outputText[11]);
     }
     }
 

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="380.0" prefWidth="600.0" styleClass="MainAn" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.scenedemo.FirstController">
+    <stylesheets>
+        <URL value="@application.css" />
+    </stylesheets>
+   <children>
+      <Pane opacity="0.85" prefHeight="380.0" prefWidth="600.0" styleClass="MainPane">
+         <children>
+            <Button layoutX="14.0" layoutY="350.0" mnemonicParsing="false" onAction="#SwitchTo1" prefHeight="24.0" prefWidth="78.0" styleClass="button1" text="Back" textFill="WHITE">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <TextArea layoutX="15.0" layoutY="14.0" prefHeight="330.0" prefWidth="570.0" styleClass="ReadMeText" text="&#10;Generate Tradeups tab shows different trade ups that are interesting/profitable. However, you should always verify &#10;that these trade ups are still valuable at the moment you are checking them as the steam market is very volatile&#10;and the conditions may have changed from the instant it was released.If you want to know more about the math &#10;behind CS:GO trade ups, check out Eaze's guide. https://steamcommunity.com/sharedfiles/filedetails/?id=2153553713&#10;&#10;Gainer - the skin that provides the value for tradeup and is in the lower tier&#10;&#10;Filler - the skin that helps gainer achieve the higher tier. Always is the skin with higher tier&#10;&#10;ROI - The average % return from tradeups cost.&#10;&#10;Doing these tradeups use proper risk management, from a statistical stand point, you should make money cosistanlty&#10; given proper risk management.&#10;&#10;All the tradeups generated are above 105% ROI, taken the fact that there is around 5% tax for skin markets. &#10;If using steam community market, check  what would be the outcome, since thefees are bigger. We recommend using&#10; custom skin markets.">
+               <font>
+                  <Font name="Agency FB" size="14.0" />
+               </font>
+            </TextArea>
+            <Label layoutX="226.0" layoutY="7.0" prefHeight="36.0" prefWidth="125.0" text="CSGO Tradeup Finder">
+               <font>
+                  <Font name="Agency FB" size="18.0" />
+               </font>
+            </Label>
+         </children></Pane>
+   </children>
+</AnchorPane>
