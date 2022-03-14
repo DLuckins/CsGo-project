@@ -102,9 +102,10 @@ public class FirstController {
     private TableColumn<Data1, String> Name;
 
     @FXML
-    private TableColumn<Data1, Double> Roi;
+    private TableColumn<Data1, String> Risk;
+
     @FXML
-    private TableColumn<Data1, Void> VisualizeBtn;
+    private TableColumn<Data1, Double> Roi;
     //clicking on button update
     @FXML
     void Update(ActionEvent event) throws IOException{
@@ -182,7 +183,9 @@ public class FirstController {
         HMFTP.setCellValueFactory(new PropertyValueFactory<Data1,Integer>("HMFTP"));
         Cost.setCellValueFactory(new PropertyValueFactory<Data1,Double>("Cost"));
         Roi.setCellValueFactory(new PropertyValueFactory<Data1,Double>("ROI"));
-
+        Risk.setCellValueFactory(new PropertyValueFactory<Data1,String>("Risk"));
+        String Risk="";
+        double volume;
         String pathToDB = "FinalSkinsDb.db";
         ObservableList<Data1> data=FXCollections.observableArrayList();
         Connection connection = DriverManager.getConnection("jdbc:sqlite:" + pathToDB);
@@ -190,10 +193,23 @@ public class FirstController {
         Statement statement=connection.createStatement();
         ResultSet result = statement.executeQuery(sqlite);
         while ( result.next()){
+            volume=result.getDouble("VolumeForMostExpensive");
+            if (volume<=100){
+                Risk="High";
+            }
+            if (volume>100&&volume<=1000){
+                Risk="Moderate";
+            }
+            if (volume>1000&&volume<=5000){
+                Risk="Low";
+            }
+            if (volume>5000){
+                Risk="No risk";
+            }
            data.add(new Data1(result.getString("NameOfValue"),result.getString("Collection"), result.getString("Wear"),
                    result.getDouble("Price"),result.getInt("HowManyToPutIn"),result.getString("NameOfFiller"),
                    result.getString("CollectionOfFiller"),result.getString("FillerWear"),result.getDouble("FillerPrice"),
-                   result.getInt("HowManyFillersToPut"),result.getDouble("Cost"),result.getDouble("ROI")));
+                   result.getInt("HowManyFillersToPut"),result.getDouble("Cost"),result.getDouble("ROI"),Risk));
 
         }
     return data;

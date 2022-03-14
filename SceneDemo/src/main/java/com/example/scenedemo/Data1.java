@@ -1,10 +1,10 @@
 package com.example.scenedemo;
 
 public class Data1 {
-    private String Name, Condition,Collection,COF,FW,NOF;
+    private String Name, Condition,Collection,COF,FW,NOF,Risk;
     private double AveragePrice,Cost,FP,ROI;
     private int HMFTP,HMTP;
-    public Data1 (String Name,String Collection,String Condition,double AveragePrice,int HMTP,String NOF,String COF,String FW,double FP,int HMFTP,Double Cost,Double ROI){
+    public Data1 (String Name,String Collection,String Condition,double AveragePrice,int HMTP,String NOF,String COF,String FW,double FP,int HMFTP,double Cost,double ROI,String Risk){
         this.Name=Name;
         this.Collection=Collection;
         this.Condition=Condition;
@@ -17,6 +17,7 @@ public class Data1 {
         this.HMFTP=HMFTP;
         this.Cost=Cost;
         this.ROI=ROI;
+        this.Risk=Risk;
 
     }
 
@@ -115,4 +116,13 @@ public class Data1 {
     public void setAveragePrice(double averagePrice) {
         AveragePrice = averagePrice;
     }
+
+    public String getRisk() {
+        return Risk;
+    }
+
+    public void setRisk(String risk) {
+        Risk = risk;
+    }
 }
+

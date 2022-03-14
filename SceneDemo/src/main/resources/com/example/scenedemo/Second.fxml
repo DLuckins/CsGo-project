@@ -40,6 +40,7 @@
             <TableColumn fx:id="HMFTP" prefWidth="200.0" text="HowManyFillersToPut" />
             <TableColumn fx:id="Cost" prefWidth="220.0" text="Cost" />
             <TableColumn fx:id="Roi" prefWidth="220.0" text="Roi" />
+            <TableColumn fx:id="Risk" prefWidth="75.0" text="Risk" />
         </columns>
       </TableView>
       <ImageView fx:id="LoadingGif2" fitHeight="40.0" fitWidth="40.0" layoutX="746.0" layoutY="474.0" pickOnBounds="true" preserveRatio="true" visible="false">
