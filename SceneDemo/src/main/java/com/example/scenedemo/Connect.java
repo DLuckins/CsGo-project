@@ -33,7 +33,8 @@ public class Connect {
                     UpdateValueAddedAndTaken(connection, result);
                 }
                 //Responsible for storing profitable tradeups
-               CheckIfProfit(connection);
+                CheckIfProfit(connection);
+                connection.close();
 
             } catch (SQLException e) {
                 System.out.println("Error connecting to SQLite database");
